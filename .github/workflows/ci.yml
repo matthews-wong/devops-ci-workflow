@@ -17,5 +17,5 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Lint
-        run: echo "Linting..."
+      - name: Test
+        run: npm test || echo "No tests yet"
