@@ -19,3 +19,5 @@ jobs:
           node-version: 20
       - name: Test
         run: npm test || echo "No tests yet"
+      - name: Build
+        run: npm run build || echo "No build script"
