@@ -40,7 +40,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install actionlint
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          curl -sSLo /tmp/actionlint.tar.gz \
+            https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz
+          tar -xzf /tmp/actionlint.tar.gz -C "$HOME/.local/bin"
+          chmod +x "$HOME/.local/bin/actionlint"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - name: Run actionlint
-        uses: rhysd/actionlint@v1
-        with:
-          checks: all
+        run: actionlint
