@@ -8,7 +8,7 @@
     "lint": "node --check src/helpers.js && node --check test/helpers.test.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "license": "MIT"
 }
