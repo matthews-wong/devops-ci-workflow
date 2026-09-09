@@ -12,3 +12,11 @@ export function add(a, b) {
 export function greet(name) {
   return name ? `Hello, ${name}!` : 'Hello, world!';
 }
+
+/** Constrain a number to the inclusive [min, max] range. */
+export function clamp(value, min, max) {
+  if (min > max) {
+    throw new RangeError(`clamp: min (${min}) must not exceed max (${max})`);
+  }
+  return Math.min(Math.max(value, min), max);
+}

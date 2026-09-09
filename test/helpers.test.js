@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { add, greet } from '../src/helpers.js';
+import { add, clamp, greet } from '../src/helpers.js';
 
 test('add sums numbers', () => {
   assert.equal(add(2, 3), 5);
@@ -29,4 +29,17 @@ test('greet keeps names with spaces intact', () => {
 test('greet defaults without a name', () => {
   assert.equal(greet(''), 'Hello, world!');
   assert.equal(greet(undefined), 'Hello, world!');
+});
+
+test('clamp passes through in-range values', () => {
+  assert.equal(clamp(5, 0, 10), 5);
+});
+
+test('clamp caps values outside the range', () => {
+  assert.equal(clamp(-1, 0, 10), 0);
+  assert.equal(clamp(11, 0, 10), 10);
+});
+
+test('clamp rejects an inverted range', () => {
+  assert.throws(() => clamp(5, 10, 0), RangeError);
 });
