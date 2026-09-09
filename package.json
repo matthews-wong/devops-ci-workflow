@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "lint": "node --check src/helpers.js && node --check test/helpers.test.js"
+    "lint": "node --check src/helpers.js && node --check test/helpers.test.js",
+    "validate": "npm run lint && npm test"
   },
   "engines": {
     "node": ">=20"
