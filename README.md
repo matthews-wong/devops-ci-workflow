@@ -35,6 +35,12 @@ Validate the workflow YAML offline with [actionlint](https://github.com/rhysd/ac
 actionlint .github/workflows/ci.yml
 ```
 
+Or run lint and tests together with a single command:
+
+```bash
+npm run validate
+```
+
 ## Pipeline
 
 On every push to `main` and on pull requests, three jobs run:
