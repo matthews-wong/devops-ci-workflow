@@ -51,3 +51,13 @@ On every push to `main` and on pull requests, three jobs run:
 
 Dependabot opens weekly update PRs for the pinned actions and npm metadata so
 the template does not drift from current releases.
+
+## Design decisions
+
+**Three separate jobs instead of one.** `lint`, `test`, and `actionlint` could
+run as sequential steps in a single job, but splitting them means a failure
+reports which concern broke instead of just "the CI job failed" — a red
+`actionlint` check on a PR that only touched `src/` immediately points at a
+workflow-file problem instead of the source change. It also lets the fast
+`lint` and `actionlint` jobs report back well before the slower `test` matrix
+finishes, since GitHub Actions runs independent jobs in parallel by default.
