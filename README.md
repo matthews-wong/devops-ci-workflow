@@ -1,5 +1,7 @@
 # CI Workflow Template
 
+[![CI](https://github.com/matthews-wong/devops-ci-workflow/actions/workflows/ci.yml/badge.svg)](https://github.com/matthews-wong/devops-ci-workflow/actions/workflows/ci.yml)
+
 A minimal, dependency-free Node.js project scaffold paired with a lean GitHub
 Actions pipeline. It is meant as a compact reference for wiring up continuous
 integration on a new repository: lint the workflow files themselves, run tests
@@ -45,8 +47,9 @@ npm run validate
 
 On every push to `main` and on pull requests, three jobs run:
 
-- `lint` — a syntax check of the sources and tests using `node --check`, so a
-  typo that would not survive parsing fails in seconds.
+- `lint` — a syntax check of the sources and tests using `node --check`,
+  followed by `npm audit` at a high severity threshold, so a typo or a known
+  vulnerable dependency both fail in seconds.
 - `test` — the suite on the current supported Node LTS lines (20, 22, 24),
   reading dependencies from the committed lockfile. Failing tests block the
   merge; errors are never masked with `|| true`.
