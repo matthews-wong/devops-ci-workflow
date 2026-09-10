@@ -2,7 +2,12 @@
   "name": "devops-ci-workflow",
   "version": "0.1.0",
   "description": "A small GitHub Actions CI workflow template for a Node project.",
+  "private": true,
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matthews-wong/devops-ci-workflow.git"
+  },
   "scripts": {
     "test": "node --test",
     "lint": "node --check src/helpers.js && node --check test/helpers.test.js",
