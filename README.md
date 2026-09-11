@@ -14,7 +14,9 @@ across Node versions, and fail loudly when something breaks.
 .github/dependabot.yml     # weekly updates for actions and npm dependencies
 src/helpers.js              # sample dependency-free module
 test/helpers.test.js        # tests using the built-in node:test runner
+test/config.test.js         # guards metadata files (.nvmrc, package.json) against drift
 package.json                # test/lint scripts + engines contract
+CONTRIBUTING.md              # commit, branch, and PR conventions
 ```
 
 ## Local usage
@@ -52,8 +54,9 @@ On every push to `main` and on pull requests, three jobs run:
   followed by `npm audit` at a high severity threshold, so a typo or a known
   vulnerable dependency both fail in seconds.
 - `test` — the suite on the current supported Node LTS lines (20, 22, 24),
-  reading dependencies from the committed lockfile. Failing tests block the
-  merge; errors are never masked with `|| true`.
+  each on both `ubuntu-latest` and `windows-latest`, reading dependencies from
+  the committed lockfile. Failing tests block the merge; errors are never
+  masked with `|| true`.
 - `actionlint` — validates the workflow definitions themselves. The actionlint
   binary is downloaded pinned to a release and verified against the release
   checksum before it runs, so a tampered or truncated download never reaches
