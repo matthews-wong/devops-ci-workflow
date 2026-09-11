@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { add, clamp, greet } from '../src/helpers.js';
+import { add, clamp, greet, unique } from '../src/helpers.js';
 
 test('add sums numbers', () => {
   assert.equal(add(2, 3), 5);
@@ -42,4 +42,16 @@ test('clamp caps values outside the range', () => {
 
 test('clamp rejects an inverted range', () => {
   assert.throws(() => clamp(5, 10, 0), RangeError);
+});
+
+test('unique drops duplicate values', () => {
+  assert.deepEqual(unique([1, 2, 2, 3, 1]), [1, 2, 3]);
+});
+
+test('unique preserves first-seen order', () => {
+  assert.deepEqual(unique(['b', 'a', 'b', 'c']), ['b', 'a', 'c']);
+});
+
+test('unique returns an empty array for an empty input', () => {
+  assert.deepEqual(unique([]), []);
 });
