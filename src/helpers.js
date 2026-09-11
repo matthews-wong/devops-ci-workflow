@@ -20,3 +20,8 @@ export function clamp(value, min, max) {
   }
   return Math.min(Math.max(value, min), max);
 }
+
+/** Return a new array with duplicate values removed, preserving order. */
+export function unique(values) {
+  return [...new Set(values)];
+}
