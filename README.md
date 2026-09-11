@@ -31,10 +31,11 @@ Syntax-check the sources and tests without any linter dependency:
 npm run lint
 ```
 
-Validate the workflow YAML offline with [actionlint](https://github.com/rhysd/actionlint):
+Validate the workflow YAML offline with [actionlint](https://github.com/rhysd/actionlint)
+(installed separately — it's not an npm dependency):
 
 ```bash
-actionlint .github/workflows/ci.yml
+npm run lint:actions
 ```
 
 Or run lint and tests together with a single command:
