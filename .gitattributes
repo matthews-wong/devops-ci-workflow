@@ -1,0 +1,3 @@
+# Normalize line endings on checkout so the windows-latest test leg
+# sees the same bytes as ubuntu-latest instead of git-converted CRLF.
+* text=auto eol=lf
