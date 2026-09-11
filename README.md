@@ -61,6 +61,9 @@ On every push to `main` and on pull requests, three jobs run:
   binary is downloaded pinned to a release and verified against the release
   checksum before it runs, so a tampered or truncated download never reaches
   the runner.
+- `dependency-review` — on pull requests only, fails if a newly introduced
+  dependency carries a high-severity advisory, catching a supply-chain
+  problem before it merges rather than after Dependabot notices it.
 
 Dependabot opens weekly update PRs for the pinned actions and npm metadata so
 the template does not drift from current releases.
