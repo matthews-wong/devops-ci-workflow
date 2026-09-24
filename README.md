@@ -16,6 +16,7 @@ src/helpers.js              # sample dependency-free module
 test/helpers.test.js        # tests using the built-in node:test runner
 test/config.test.js         # guards metadata files (.nvmrc, package.json) against drift
 package.json                # test/lint scripts + engines contract
+Makefile                     # install/test/lint/validate targets for local use
 CONTRIBUTING.md              # commit, branch, and PR conventions
 ```
 
@@ -40,19 +41,24 @@ Validate the workflow YAML offline with [actionlint](https://github.com/rhysd/ac
 npm run lint:actions
 ```
 
-Or run lint and tests together with a single command:
+Or run lint and coverage-checked tests together with a single command:
 
 ```bash
 npm run validate
 ```
+
+The same targets are available through `make` (`make test`, `make lint`,
+`make validate`, ...) for anyone who prefers not to remember npm script names.
 
 ## Pipeline
 
 On every push to `main` and on pull requests, three jobs run:
 
 - `lint` — a syntax check of the sources and tests using `node --check`,
-  followed by `npm audit` at a high severity threshold, so a typo or a known
-  vulnerable dependency both fail in seconds.
+  a coverage-threshold run of the suite (`node --test`'s built-in coverage,
+  gated at 100% lines/branches/functions on `src/`), and `npm audit` at a high
+  severity threshold — so a typo, an untested branch, and a known vulnerable
+  dependency all fail in seconds.
 - `test` — the suite on the current supported Node LTS lines (20, 22, 24),
   each on both `ubuntu-latest` and `windows-latest`, reading dependencies from
   the committed lockfile. Failing tests block the merge; errors are never
@@ -77,3 +83,11 @@ reports which concern broke instead of just "the CI job failed" — a red
 workflow-file problem instead of the source change. It also lets the fast
 `lint` and `actionlint` jobs report back well before the slower `test` matrix
 finishes, since GitHub Actions runs independent jobs in parallel by default.
+
+**Credentials and install scripts are locked down even with zero
+dependencies today.** Every checkout sets `persist-credentials: false` and
+every `npm ci` runs with `--ignore-scripts`, so neither a compromised step nor
+a future dependency's install hook can reach the runner's scoped
+`GITHUB_TOKEN` or execute arbitrary code before a human reviews it. It costs
+nothing while the template stays dependency-free and pays for itself the
+moment a real dependency is added.
