@@ -1,7 +1,7 @@
 .PHONY: install test lint lint-actions validate
 
 install:
-	npm ci
+	npm ci --ignore-scripts
 
 test:
 	npm test
