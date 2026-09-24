@@ -25,3 +25,15 @@ export function clamp(value, min, max) {
 export function unique(values) {
   return [...new Set(values)];
 }
+
+/** Split an array into chunks of at most `size` elements, preserving order. */
+export function chunk(values, size) {
+  if (!Number.isInteger(size) || size < 1) {
+    throw new RangeError(`chunk: size (${size}) must be a positive integer`);
+  }
+  const chunks = [];
+  for (let i = 0; i < values.length; i += size) {
+    chunks.push(values.slice(i, i + size));
+  }
+  return chunks;
+}

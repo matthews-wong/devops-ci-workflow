@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { add, clamp, greet, unique } from '../src/helpers.js';
+import { add, chunk, clamp, greet, unique } from '../src/helpers.js';
 
 test('add sums numbers', () => {
   assert.equal(add(2, 3), 5);
@@ -54,4 +54,25 @@ test('unique preserves first-seen order', () => {
 
 test('unique returns an empty array for an empty input', () => {
   assert.deepEqual(unique([]), []);
+});
+
+test('chunk splits evenly divisible arrays', () => {
+  assert.deepEqual(chunk([1, 2, 3, 4], 2), [[1, 2], [3, 4]]);
+});
+
+test('chunk keeps a shorter final chunk for a remainder', () => {
+  assert.deepEqual(chunk([1, 2, 3, 4, 5], 2), [[1, 2], [3, 4], [5]]);
+});
+
+test('chunk returns an empty array for an empty input', () => {
+  assert.deepEqual(chunk([], 3), []);
+});
+
+test('chunk rejects a non-positive size', () => {
+  assert.throws(() => chunk([1, 2], 0), RangeError);
+  assert.throws(() => chunk([1, 2], -1), RangeError);
+});
+
+test('chunk rejects a non-integer size', () => {
+  assert.throws(() => chunk([1, 2], 1.5), RangeError);
 });
