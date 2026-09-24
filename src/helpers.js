@@ -37,3 +37,25 @@ export function chunk(values, size) {
   }
   return chunks;
 }
+
+/**
+ * Call `fn` and retry on rejection up to `retries` additional times, waiting
+ * `delayMs` between attempts. Rejects with the last error once attempts run out.
+ */
+export async function retry(fn, { retries = 3, delayMs = 0 } = {}) {
+  if (!Number.isInteger(retries) || retries < 0) {
+    throw new RangeError(`retry: retries (${retries}) must be a non-negative integer`);
+  }
+  let lastError;
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      if (attempt < retries && delayMs > 0) {
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+    }
+  }
+  throw lastError;
+}
