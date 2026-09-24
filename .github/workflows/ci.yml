@@ -37,7 +37,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
       - name: Run tests
         run: npm test
 
@@ -58,7 +58,7 @@ jobs:
           node-version: 22
           cache: npm
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
       - name: Syntax check sources and tests
         run: npm run lint
       - name: Audit dependencies
