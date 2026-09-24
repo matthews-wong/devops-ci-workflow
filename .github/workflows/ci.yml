@@ -42,7 +42,7 @@ jobs:
         run: npm test
 
   lint:
-    name: Syntax check
+    name: Lint, coverage, and audit
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -61,6 +61,8 @@ jobs:
         run: npm ci --ignore-scripts
       - name: Syntax check sources and tests
         run: npm run lint
+      - name: Enforce coverage thresholds
+        run: npm run test:coverage
       - name: Audit dependencies
         run: npm audit --omit=dev --audit-level=high
 
