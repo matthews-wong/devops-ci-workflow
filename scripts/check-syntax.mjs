@@ -9,9 +9,7 @@ import { readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-
-function findJsFiles(dir) {
+export function findJsFiles(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const entryPath = path.join(dir, entry.name);
     if (entry.isDirectory()) return findJsFiles(entryPath);
@@ -19,16 +17,23 @@ function findJsFiles(dir) {
   });
 }
 
-const files = ['src', 'test']
-  .map((dir) => path.join(root, dir))
-  .flatMap(findJsFiles)
-  .sort();
+function main() {
+  const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+  const files = ['src', 'test']
+    .map((dir) => path.join(root, dir))
+    .flatMap(findJsFiles)
+    .sort();
 
-if (files.length === 0) {
-  throw new Error('check-syntax: found no .js files under src/ or test/');
+  if (files.length === 0) {
+    throw new Error('check-syntax: found no .js files under src/ or test/');
+  }
+
+  for (const file of files) {
+    execFileSync(process.execPath, ['--check', file], { stdio: 'inherit' });
+    console.log(`ok ${path.relative(root, file)}`);
+  }
 }
 
-for (const file of files) {
-  execFileSync(process.execPath, ['--check', file], { stdio: 'inherit' });
-  console.log(`ok ${path.relative(root, file)}`);
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main();
 }
