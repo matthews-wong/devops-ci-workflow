@@ -11,7 +11,7 @@
   "scripts": {
     "test": "node --test",
     "test:coverage": "node --test --experimental-test-coverage --test-coverage-include='src/**/*.js' --test-coverage-lines=100 --test-coverage-branches=100 --test-coverage-functions=100",
-    "lint": "node --check src/helpers.js && node --check test/helpers.test.js && node --check test/config.test.js",
+    "lint": "node scripts/check-syntax.mjs",
     "lint:actions": "actionlint",
     "validate": "npm run lint && npm run test:coverage"
   },
