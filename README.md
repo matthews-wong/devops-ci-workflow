@@ -10,14 +10,19 @@ across Node versions, and fail loudly when something breaks.
 ## Project layout
 
 ```
-.github/workflows/ci.yml   # syntax checks + tests + actionlint on push / PR
-.github/dependabot.yml     # weekly updates for actions and npm dependencies
-src/helpers.js              # sample dependency-free module
-test/helpers.test.js        # tests using the built-in node:test runner
-test/config.test.js         # guards metadata files (.nvmrc, package.json) against drift
-package.json                # test/lint scripts + engines contract
-Makefile                     # install/test/lint/validate targets for local use
-CONTRIBUTING.md              # commit, branch, and PR conventions
+.github/workflows/ci.yml                     # syntax checks + tests + actionlint on push / PR
+.github/workflows/dependabot-auto-merge.yml  # auto-merges green patch/minor Dependabot PRs
+.github/workflows/labeler.yml                # path-based PR labels
+.github/dependabot.yml                       # weekly updates for actions and npm dependencies
+.github/ISSUE_TEMPLATE/                      # bug report and feature request forms
+scripts/check-syntax.mjs                     # globs src/ and test/ for the lint script
+src/helpers.js                               # sample dependency-free module
+test/helpers.test.js                         # tests using the built-in node:test runner
+test/config.test.js                          # guards metadata files (.nvmrc, package.json) against drift
+test/check-syntax.test.js                    # covers the syntax-check script's file discovery
+package.json                                 # test/lint scripts + engines contract
+Makefile                                     # install/test/lint/validate targets for local use
+CONTRIBUTING.md                              # commit, branch, and PR conventions
 ```
 
 ## Local usage
@@ -52,13 +57,15 @@ The same targets are available through `make` (`make test`, `make lint`,
 
 ## Pipeline
 
-On every push to `main` and on pull requests, three jobs run:
+On every push to `main` and on pull requests, four jobs run:
 
-- `lint` — a syntax check of the sources and tests using `node --check`,
-  a coverage-threshold run of the suite (`node --test`'s built-in coverage,
-  gated at 100% lines/branches/functions on `src/`), and `npm audit` at a high
-  severity threshold — so a typo, an untested branch, and a known vulnerable
-  dependency all fail in seconds.
+- `lint` — a syntax check of every file under `src/` and `test/` (discovered by
+  glob, so a new file can't slip past unchecked), a coverage-threshold run of
+  the suite (`node --test`'s built-in coverage, gated at 100%
+  lines/branches/functions on `src/`), and `npm audit` at a high severity
+  threshold — so a typo, an untested branch, and a known vulnerable dependency
+  all fail in seconds. Coverage and audit output are also written to the job
+  summary, so a failure's detail is visible without opening the raw log.
 - `test` — the suite on the current supported Node LTS lines (20, 22, 24),
   each on both `ubuntu-latest` and `windows-latest`, reading dependencies from
   the committed lockfile. Failing tests block the merge; errors are never
@@ -72,7 +79,10 @@ On every push to `main` and on pull requests, three jobs run:
   problem before it merges rather than after Dependabot notices it.
 
 Dependabot opens weekly update PRs for the pinned actions and npm metadata so
-the template does not drift from current releases.
+the template does not drift from current releases; a separate auto-merge
+workflow merges those PRs itself once CI is green, as long as the bump isn't a
+major version. A path-based labeler also tags every PR (`ci`, `docs`, `tests`,
+`source`, `dependencies`) so triage doesn't depend on reading the diff first.
 
 ## Design decisions
 
