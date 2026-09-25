@@ -30,3 +30,11 @@ actionlint         # if you touched .github/workflows/
 
 A pull request should be mergeable on its own — keep it to one logical
 change, and let CI go green before requesting review.
+
+## Dependency update policy
+
+Dependabot opens weekly PRs for the pinned actions and npm metadata (see
+`.github/dependabot.yml`). Patch and minor bumps auto-merge once CI is green —
+`.github/workflows/dependabot-auto-merge.yml` enables `--auto --rebase` merge
+for anything below a major version. Major bumps are left for a human to review,
+since they can carry breaking changes an automated check won't catch.
