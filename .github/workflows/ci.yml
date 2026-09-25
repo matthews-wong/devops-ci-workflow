@@ -62,9 +62,29 @@ jobs:
       - name: Syntax check sources and tests
         run: npm run lint
       - name: Enforce coverage thresholds
-        run: npm run test:coverage
+        run: |
+          set -o pipefail
+          npm run test:coverage 2>&1 | tee coverage-output.txt
+          status=$?
+          {
+            echo '### Coverage report'
+            echo '```'
+            cat coverage-output.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
       - name: Audit dependencies
-        run: npm audit --omit=dev --audit-level=high
+        run: |
+          set -o pipefail
+          npm audit --omit=dev --audit-level=high 2>&1 | tee audit-output.txt
+          status=$?
+          {
+            echo '### npm audit'
+            echo '```'
+            cat audit-output.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
 
   actionlint:
     name: Validate workflow files
