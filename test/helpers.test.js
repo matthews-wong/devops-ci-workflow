@@ -68,6 +68,10 @@ test('chunk returns an empty array for an empty input', () => {
   assert.deepEqual(chunk([], 3), []);
 });
 
+test('chunk keeps everything in one chunk when size exceeds the array length', () => {
+  assert.deepEqual(chunk([1, 2], 5), [[1, 2]]);
+});
+
 test('chunk rejects a non-positive size', () => {
   assert.throws(() => chunk([1, 2], 0), RangeError);
   assert.throws(() => chunk([1, 2], -1), RangeError);
@@ -84,6 +88,18 @@ test('retry resolves on the first attempt without retrying', async () => {
     return 'ok';
   });
   assert.equal(result, 'ok');
+  assert.equal(calls, 1);
+});
+
+test('retry with retries: 0 fails on the first error with no extra attempts', async () => {
+  let calls = 0;
+  await assert.rejects(
+    retry(() => {
+      calls += 1;
+      throw new Error('only attempt failed');
+    }, { retries: 0 }),
+    /only attempt failed/
+  );
   assert.equal(calls, 1);
 });
 
