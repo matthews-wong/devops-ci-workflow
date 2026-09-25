@@ -1,0 +1,21 @@
+ci:
+  - changed-files:
+      - any-glob-to-any-file: .github/workflows/**
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/dependabot.yml
+          - package-lock.json
+
+docs:
+  - changed-files:
+      - any-glob-to-any-file: "**/*.md"
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file: test/**
+
+source:
+  - changed-files:
+      - any-glob-to-any-file: src/**
