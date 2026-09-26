@@ -115,8 +115,27 @@ jobs:
           grep 'actionlint_1.7.12_linux_amd64.tar.gz' actionlint_1.7.12_checksums.txt | sha256sum -c -
           tar -xzf actionlint_1.7.12_linux_amd64.tar.gz -C "$HOME/.local/bin"
           chmod +x "$HOME/.local/bin/actionlint"
-      - name: Add actionlint to PATH
+      - name: Cache shellcheck binary
+        id: cache-shellcheck
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.local/bin/shellcheck
+          key: shellcheck-0.10.0-linux-x86_64
+      - name: Install shellcheck
+        if: steps.cache-shellcheck.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          cd /tmp
+          curl -sSLo shellcheck-v0.10.0.linux.x86_64.tar.xz \
+            https://github.com/koalaman/shellcheck/releases/download/v0.10.0/shellcheck-v0.10.0.linux.x86_64.tar.xz
+          echo '6c881ab0698e4e6ea235245f22832860544f17ba386442fe7e9d629f8cbedf87  shellcheck-v0.10.0.linux.x86_64.tar.xz' | sha256sum -c -
+          tar -xJf shellcheck-v0.10.0.linux.x86_64.tar.xz -C "$HOME/.local/bin" --strip-components=1 shellcheck-v0.10.0/shellcheck
+          chmod +x "$HOME/.local/bin/shellcheck"
+      - name: Add actionlint and shellcheck to PATH
         run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      # actionlint shells out to shellcheck for every `run:` step when it's on PATH,
+      # so installing it above closes the gap where embedded bash (pipefail, tee, etc.)
+      # went unchecked.
       - name: Run actionlint
         run: actionlint
 
