@@ -71,9 +71,11 @@ On every push to `main` and on pull requests, four jobs run:
   the committed lockfile. Failing tests block the merge; errors are never
   masked with `|| true`.
 - `actionlint` — validates the workflow definitions themselves. The actionlint
-  binary is downloaded pinned to a release and verified against the release
-  checksum before it runs, so a tampered or truncated download never reaches
-  the runner.
+  and shellcheck binaries are each downloaded pinned to a release and verified
+  against a checksum before they run, so a tampered or truncated download
+  never reaches the runner. Installing shellcheck also makes actionlint
+  shellcheck every workflow's inline `run:` steps, not just the YAML shape
+  around them.
 - `dependency-review` — on pull requests only, fails if a newly introduced
   dependency carries a high-severity advisory, catching a supply-chain
   problem before it merges rather than after Dependabot notices it.
