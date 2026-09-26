@@ -24,7 +24,7 @@ ran.
 Run the same checks CI runs:
 
 ```bash
-npm run validate   # lint + test
+npm run validate   # lint + coverage-gated tests (100% lines/branches/functions on src/)
 actionlint         # if you touched .github/workflows/
 ```
 
