@@ -8,6 +8,7 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const pkg = JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8'));
 const nvmrcVersion = readFileSync(path.join(root, '.nvmrc'), 'utf8').trim();
 const workflow = readFileSync(path.join(root, '.github/workflows/ci.yml'), 'utf8');
+const makefile = readFileSync(path.join(root, 'Makefile'), 'utf8');
 const minNode = Number(pkg.engines.node.replace('>=', ''));
 
 test('.nvmrc satisfies the engines.node minimum in package.json', () => {
@@ -36,5 +37,18 @@ test('the CI test matrix covers the version pinned in .nvmrc', () => {
   assert.ok(
     matrixVersions.includes(nvmrcVersion),
     `ci.yml's node-version matrix [${matrixVersions.join(', ')}] does not include the .nvmrc pin (${nvmrcVersion})`
+  );
+});
+
+test("the Makefile's validate target runs the same coverage gate as npm run validate", () => {
+  assert.ok(
+    pkg.scripts.validate.includes('test:coverage'),
+    "package.json's validate script no longer runs test:coverage"
+  );
+  const [, prereqs] = makefile.match(/^validate:\s*(.+)$/m) ?? [];
+  assert.ok(prereqs, 'expected a validate target in the Makefile');
+  assert.ok(
+    prereqs.split(/\s+/).includes('test-coverage'),
+    `Makefile's validate target [${prereqs}] does not run test-coverage, so it can pass locally while the coverage-gated npm run validate fails`
   );
 });
