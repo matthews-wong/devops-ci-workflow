@@ -15,7 +15,7 @@ jobs:
   auto-merge:
     name: Enable auto-merge for patch/minor updates
     if: github.actor == 'dependabot[bot]'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
       contents: write
